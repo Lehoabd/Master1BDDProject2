@@ -1,0 +1,109 @@
+// Requete exemple sans correction 
+mapFunction = function () {
+    emit(this.category, 1);};
+reduceFunction = function (key, values) {
+    return Array.sum(values);};
+queryParam = {"query":{}, "out":{"inline":true}};
+db.paris.mapReduce(mapFunction, reduceFunction, queryParam);
+
+
+// Requete exemple après correction (Inline doit être à 1 et non true)
+mapFunction = function () {
+    emit(this.category, 1);};
+reduceFunction = function (key, values) {
+    return Array.sum(values);};
+queryParam = { query: {}, out: { inline: 1 } };
+db.paris.mapReduce(mapFunction, reduceFunction, queryParam);
+
+
+// a. Pour chaque catégorie, donner le nombre de services en français (utiliser la taille d’une liste en javascript ”services.fr.length”) ;
+mapFunction = function () {
+    if (this.services && this.services.fr) {
+        emit(this.category, this.services.fr.length);
+    }
+};
+
+reduceFunction = function (key, values) {
+    return Array.sum(values);
+};
+db.paris.mapReduce(mapFunction, reduceFunction, queryParam);
+
+// b. Pour chaque catégorie, donner le nombre de mots pour les commentaires en français ;
+mapFunction = function () {
+    if (this.reviews && this.reviews.fr) {
+        let total = 0;
+        this.reviews.fr.forEach(review => {
+            if (review.wordsCount) total += review.wordsCount;
+        });
+        emit(this.category, total);
+    }
+};
+
+reduceFunction = function (key, values) {
+    return Array.sum(values);
+};
+
+
+// c. Pour chaque ”type” de contact (s’il existe), donner le nombre de lieux associés ;
+mapFunction = function () {
+    if (this.contact && this.contact.type) {
+        emit(this.contact.type, 1);
+    }
+};
+
+reduceFunction = function (key, values) {
+    return Array.sum(values);
+};
+
+
+// d. Donner le nombre de lieux pour chaque ”nombre moyen de mots” par lieu (moyenne de reviews.wordsCount), pour les messages Facebook. Arrondir la moyenne à l’inférieur (Math.floor() ) ;
+mapFunction = function () {
+    if (this.reviews && this.reviews.facebook) {
+        let total = 0;
+        let count = 0;
+        this.reviews.facebook.forEach(review => {
+            if (review.wordsCount) {
+                total += review.wordsCount;
+                count++;
+            }
+        });
+        if (count > 0) {
+            let avg = Math.floor(total / count);
+            emit(avg, 1);
+        }
+    }
+};
+
+reduceFunction = function (key, values) {
+    return Array.sum(values);
+};
+
+
+// e. Pour chaque source de commentaire, donner le nombre moyen de mots ;
+mapFunction = function () {
+    if (this.reviews) {
+        for (let lang in this.reviews) {
+            this.reviews[lang].forEach(review => {
+                if (review.source && review.wordsCount) {
+                    emit(review.source, { sum: review.wordsCount, count: 1 });
+                }
+            });
+        }
+    }
+};
+
+reduceFunction = function (key, values) {
+    return values.reduce((acc, val) => {
+        return { sum: acc.sum + val.sum, count: acc.count + val.count };
+    }, { sum: 0, count: 0 });
+};
+res.value.sum / res.value.count
+
+
+// f. Attention, la moyenne n’est pas une fonction associative (contrairement à la somme) - problème de reduce local et global.
+
+// g. Même question, mais en produisant la note moyenne (rating), min et max ;
+
+// h. Pour chaque langue de services, donner la liste distincte des services proposés ;
+
+// i. Nombre de langues de commentaires différents par type de source ;
