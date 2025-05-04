@@ -28,6 +28,7 @@ reduceFunction = function (key, values) {
 };
 db.paris.mapReduce(mapFunction, reduceFunction, queryParam);
 
+
 // b. Pour chaque catégorie, donner le nombre de mots pour les commentaires en français ;
 mapFunction = function () {
     if (this.reviews && this.reviews.fr) {
