@@ -58,17 +58,17 @@ use('projetBD');
 //   genres : "Animation|Cyberpunk"
 // });
 
-db["movielens_users"].updateOne({
-  _id: 98765,
-},{
-  $set: {
-    movies : [{
-      _id : 67890,
-      rating : 5,
-      timestamp : new Date().getTime()/1000
-    }]
-  }
-});
+// db["movielens_users"].updateOne({
+//   _id: 98765,
+// },{
+//   $set: {
+//     movies : [{
+//       _id : 67890,
+//       rating : 5,
+//       timestamp : Math.floor(new Date().getTime() / 1000)
+//     }]
+//   }
+// });
 
 // db["movielens_users"].find({
 //   name : {
@@ -182,24 +182,314 @@ db["movielens_users"].updateOne({
 // db["movielens_users"].find({num_rating: {$gt: 90}}, {num_rating: 1, name: 1});
 
 //Question 21. () Combien de notes ont été soumises après le 1er janvier 2001 ?
+// let myDate = new Date("2001-01-01");
+// let mongoDate = myDate.getTime() / 1000;
+// console.log(mongoDate);
+// db['movielens_users'].aggregate([
+//   { $unwind: "$movies" },
+//   { $match: { "movies.timestamp": { $gt: mongoDate } } },
+//   { $count: "notes_apres_2001" }
+// ])
 
-//db["movielens_users"].find();
+//Question 22. Quels sont les trois derniers films notés par Jayson Brad ?
+// db['movielens_users'].aggregate([
+//   {
+//     $match: {
+//       name: {
+//         $regex: "Jayson Brad",
+//         $options: "i"
+//       }
+//     }
+//   },
+//   {
+//     $unwind: "$movies"
+//   },
+//   {
+//     $sort: {
+//       "movies.timestamp": -1
+//     }
+//   },
+//   {
+//     $project: {
+//       _id : 0,
+//       "movies.movieid": 1,
+//       "movies.rating": 1,
+//       "movies.timestamp": 1,
+//     }
+//   },
+//   {
+//     $limit : 3
+//   }
+// ])
 
-let myDate = new Date("2001-01-01");
-let mongoDate = myDate.getTime() / 1000;
-console.log(mongoDate);
-db.movielens_users.aggregate([
+// Question 23. () Obtenez les informations portant uniquement sur Tracy Edward et sa note du film Star Wars: Episode 
+// VI - Return of the Jedi, qui a pour id 1210.
+// db['movielens_users'].aggregate([
+//   {
+//     $unwind: "$movies"
+//   },
+//   {
+//     $match: {
+//       $and: [{
+//         name: {
+//           $regex: "Tracy Edward",
+//           $options: "i"
+//         }
+//       }, {
+//         "movies.movieid": 1210
+//       }]
+//     }
+//   },
+//   {
+//     $project: {
+//       _id: 0,
+//       "movies.rating": 1
+//     }
+//   }
+// ]);
+
+// Question 24. () Combien d’utilisateurs ont donné au film "Untouchables, The" la note de 5.
+// db['movielens_users'].aggregate([
+//   {
+//     $unwind: "$movies"
+//   },
+//   {
+//     $lookup: {
+//       from: "movielens_movies",
+//       localField: "movies.movieid",
+//       foreignField: "_id",
+//       as: "moviesInfo"
+//     }
+//   },
+//   {
+//     $match: {
+//       $and: [
+//         {
+//           "moviesInfo.title": {
+//             $regex: "Untouchables, The",
+//             $options: "i"
+//           }
+//         },
+//         {
+//           "movies.rating": 5
+//         }
+//       ]
+//     }
+//   },
+//   {
+//     $count: 'Note_5/5'
+//   }
+// ])
+
+// Question 25. L’utilisateur Barry Erin vient juste de voir le film Nixon, qui a pour id 14 ; il lui attribue la note de 4. Mettre 
+// à jour la base de données pour prendre en compte cette note. N’oubliez pas  que  le  champ  num_rattings  doit 
+// représenter le nombre de films notés par un utilisateur.
+// db['movielens_users'].updateOne(
+//   {
+//     name: {
+//       $regex: "Barry Erin",
+//       $options: "i"
+//     }
+//   },
+//   {
+//     $push: {
+//       movies: {
+//         movieid: 14,
+//         rating: 4,
+//         timestamp: Math.floor(new Date().getTime() / 1000)
+//       }
+//     },
+//     $inc: { num_rating: 1 }
+//   }
+// )
+
+// Question 26. L’utilisatrice Marquis Billie n’a en fait pas vu le film "Santa with Muscles", qui a pour id 1311. Supprimer 
+// la note entrée par mégarde dans la base de données.
+// db['movielens_users'].updateOne(
+//   {
+//     name: {
+//       $regex: "Barry Erin",
+//       $options: "i"
+//     }
+//   },
+//   {
+//     $pull: {
+//       movies: {
+//         movieid: 1311
+//       }
+//     },
+//     $inc: { num_rating: -1 }
+//   }
+// )
+
+// Question 27. () Les genres du film "Cinderella" devraient être Animation, Children's et Musical. Modifier en une seule 
+// requête le document correspondant pour qu’il contienne ces trois genres sans doublon.
+// db['movielens_movies'].updateOne(
+//   {
+//     title: {
+//       $regex: "Cinderella \\(1950\\)",
+//       $options: "i"
+//     }
+//   },
+//   {
+//     $set: {
+//       genres : "Animation|Children's|Musical"
+//     }
+//   }
+// )
+
+// Question 28. () Modifier la collection users en y ajoutant un champs movies.movieref qui contient une DBRef vers le 
+// film concerné.
+// db['movielens_users'].find().forEach(function(user) {
+//   user.movies.forEach(function(movie) {
+//       movie.movieref = DBRef("movielens_movies", movie.movieid);
+//   });
+//   db['movielens_users'].updateOne(
+//       { _id: user._id },
+//       { $set: { movies: user.movies } }
+//   );
+// });
+
+// Question 31, 33.  Chercher le nom des  dix femmes  qui ont  noté un film le  plus récemment. Notez que  si l’on ajoute la 
+// fonction explain() à la fin de la requête, on obtient des informations sur son exécution. 
+// db['movielens_users'].aggregate([
+//   { $match: { gender: "F" } },
+//   { $addFields: {
+//       lastRatingTime: { $max: "$movies.timestamp" }
+//   }},
+//   { $sort: { lastRatingTime: -1 } },
+//   { $limit: 10 },
+//   { $project: { _id: 0, name: 1, lastRatingTime: 1 } }
+// ]).explain("executionStats")
+
+// Question 32. Créer un index sur les champs gender et movies.date. 
+// db['movielens_users'].createIndex({ gender: 1, "movies.timestamp": -1 })
+
+// Question 34. Montrer combien de films ont été produits durant chaque année des années 90 ; ordonner les résultats 
+// de l’année la plus à la moins fructueuse. 
+db['movielens_movies'].aggregate([
   {
     $project: {
-      _id: 1,
-      name: 1,
-      movies: {
-        $filter: {
-          input: "$movies",
-          as: "movie",
-          cond: { $gt: ["$$movie.timestamp", mongoDate] }
+      title: 1,
+      year: {
+        $toInt: {
+          $arrayElemAt: [
+            {
+              $getField:
+              {
+                input:
+                {
+                  $regexFind:
+                    { input: "$title", regex: /\((\d{4})\)$/ }
+                },
+                field: "captures"
+              }
+            },
+            0
+          ]
         }
       }
     }
+  },
+  {
+    $match: {
+      $and: [
+        { year: { $gte: 1990 } },
+        { year: { $lt: 2000 } }
+      ]
+    }
+  },
+  {
+    $group: {
+      _id: "$year",
+      QteFilms: {
+        $sum: 1
+      }
+    }
+  },
+  {
+    $sort: {
+      QteFilms: -1
+    }
   }
-]);
+])
+
+//Question 35. Quelle est la note moyenne du film Pulp Fiction, qui a pour id 296 ?
+db['movielens_users'].aggregate([
+  {
+    $unwind : "$movies"
+  },
+  {
+    $match: {
+      "movies.movieid" : 296
+    }
+  },
+  {
+    $group: {
+      _id: "$movies.movieid",
+      note_moyenne: {
+        $avg: "$movies.rating"
+      }
+    }
+  }
+])
+
+// Question 36. En une seule requête, retourner pour chaque utilisateur son id, son nom, les notes maximale, minimale 
+// et moyenne qu’il a données, et ordonner le résultat par note moyenne croissante.
+db['movielens_users'].aggregate([
+  {
+    $unwind : "$movies"
+  },
+  {
+    $group: {
+      _id: "$_id",
+      name : {$first : "$name"},
+      note_minimum: {
+        $min: "$movies.rating"
+      },
+      note_maximum: {
+        $max: "$movies.rating"
+      },
+      note_moyenne: {
+        $avg: "$movies.rating"
+      },
+    }
+  },
+  {
+    $sort: {
+      note_moyenne: 1
+    }
+  }
+])
+
+//Question 37. () Quel est le mois au cours duquel le plus de notes ont été attribuées ?
+
+
+
+// Question 38. () Créer une nouvelle collection join qui associe à chaque film son _id, son titre, ses genres, son année et 
+// toutes les notes qui lui ont été attribuées. 
+db['movielens_users'].aggregate([
+  {
+    $unwind : "$movies"
+  },
+  {
+    $group: {
+      _id: "$_id",
+      name : {$first : "$name"},
+      note_minimum: {
+        $min: "$movies.rating"
+      },
+      note_maximum: {
+        $max: "$movies.rating"
+      },
+      note_moyenne: {
+        $avg: "$movies.rating"
+      },
+    }
+  },
+  {
+    $sort: {
+      note_moyenne: 1
+    }
+  }
+])
