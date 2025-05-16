@@ -19,19 +19,19 @@ Second projet BDD du Master 1 Cybersécurité, feat. Zokaroff
 
 ## Explication des documents
 ### [NoSQL_to_UML.png](https://github.com/Lehoabd/Master1BDDProject2/blob/main/sources/NoSQL_to_UML.png)
-Ce document est la modélisation conceptuel en UML représentant les deux documents json (movie et users).
+Ce document est la modélisation conceptuelle en UML représentant les deux documents JSON (movies et users).
 
 ### [Partie1_insert.json](https://github.com/Lehoabd/Master1BDDProject2/blob/main/sources/Partie1_insert.json)
-Ce document listes les différentes insert à effectuer dans la partie 1
+Ce document liste les différentes insertions à effectuer dans la partie 1.
 
 ### [Partie1_requete.mongodb.js](https://github.com/Lehoabd/Master1BDDProject2/blob/main/sources/Partie1_requete.mongodb.js)
-Ce document listes les différentes requetes à effectuer dans la partie 1
+Ce document liste les différentes requêtes à effectuer dans la partie 1.
 
 ### [Partie2_modelisation.mongodb.js](https://github.com/Lehoabd/Master1BDDProject2/blob/main/sources/Partie2_modelisation.mongodb.js)
-Ce document propose une nouvelle implémentation en NoSQL avec les avantages et les inconvénients de chaque implémentation. Il y a aussi une emplémentation en base de donnée relationnel.
+Ce document propose une nouvelle implémentation en NoSQL, avec les avantages et les inconvénients de chaque solution. Il présente également une implémentation en base de données relationnelle.
 
 ### [Partie2_requetes.mongodb.js](https://github.com/Lehoabd/Master1BDDProject2/blob/main/sources/Partie2_requetes.mongodb.js)
-Ce document listes les 38 requetes de la partie 2.
+Ce document liste les 38 requêtes de la partie 2.
 
 ### [Partie3_requete.mongodb.js](https://github.com/Lehoabd/Master1BDDProject2/blob/main/sources/Partie3_requete.mongodb.js)
-Ce document listes tout les requetes MAP/REDUCE de la partie 3 
+Ce document liste toutes les requêtes Map/Reduce de la partie 3.
