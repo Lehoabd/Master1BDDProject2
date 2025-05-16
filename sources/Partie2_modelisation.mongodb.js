@@ -74,9 +74,9 @@ let implementation2 = [
 ]
 
 /*
-🔹 Implémentation 1
+Implémentation 1
 
-✅ Avantages :
+Avantages :
 
     Simple et léger.
 
@@ -84,7 +84,7 @@ let implementation2 = [
 
     Moins verbeux.
 
-❌ Inconvénients :
+Inconvénients :
 
     Peu flexible (genres en string).
 
@@ -94,9 +94,9 @@ let implementation2 = [
 
 
 
-🔹 Implémentation 2
+Implémentation 2
 
-✅ Avantages :
+Avantages :
 
     Plus structuré et évolutif.
 
@@ -104,7 +104,7 @@ let implementation2 = [
 
     Données plus précises (ex: date de naissance).
 
-❌ Inconvénients :
+Inconvénients :
 
     Plus verbeux.
 
