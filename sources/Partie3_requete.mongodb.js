@@ -1,4 +1,4 @@
-use('tourPedia')
+// use('tourPedia')
 
 // Requete exemple sans correction 
 mapFunction = function () {
@@ -139,7 +139,6 @@ reduceFunction = function (key, values) {
     return result;
 };
 
-// Phase finale pour calculer la moyenne :
 finalizeFunction = function (key, reducedValue) {
     return Math.floor(reducedValue.totalWords / reducedValue.count);
 };
@@ -156,7 +155,6 @@ printjson(result);
 
 
 // g. Même question, mais en produisant la note moyenne (rating), min et max ;
-// --- Fonction map ---
 mapFunction = function () {
     if (Array.isArray(this.reviews)) {
         this.reviews.forEach(function (review) {
@@ -172,7 +170,6 @@ mapFunction = function () {
     }
 };
 
-// --- Fonction reduce ---
 reduceFunction = function (key, values) {
     let result = { totalRating: 0, count: 0, min: Infinity, max: -Infinity };
     values.forEach(function (val) {
@@ -184,7 +181,6 @@ reduceFunction = function (key, values) {
     return result;
 };
 
-// --- Fonction finalize ---
 finalizeFunction = function (key, reducedValue) {
     return {
         avg: Math.floor(reducedValue.totalRating / reducedValue.count),
@@ -193,17 +189,14 @@ finalizeFunction = function (key, reducedValue) {
     };
 };
 
-// --- Paramètres MapReduce ---
 queryParam = {
     query: {},
     out: { inline: 1 },
     finalize: finalizeFunction
 };
 
-// --- Exécution ---
 let result = db.paris.mapReduce(mapFunction, reduceFunction, queryParam);
 
-// --- Affichage lisible ---
 result.results.forEach(function (doc) {
     print("Source :", doc._id);
     print("  Moyenne :", doc.value.avg);
@@ -229,7 +222,6 @@ mapFunction = function () {
 };
 
 reduceFunction = function (key, values) {
-    // On récupère les services distincts
     return Array.from(new Set(values));
 };
 
@@ -253,7 +245,6 @@ mapFunction = function () {
 };
 
 reduceFunction = function (key, values) {
-    // On utilise un Set pour récupérer les langues distinctes
     return Array.from(new Set(values)).length;
 };
 
