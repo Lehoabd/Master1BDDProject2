@@ -31,7 +31,7 @@ let implementation1 = [
     }
 ]
 
-let implementation2 = [
+//Implémentation proposé par le groupe de projet
 
     //movie
     {
