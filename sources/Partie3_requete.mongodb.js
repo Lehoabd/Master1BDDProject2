@@ -2,19 +2,23 @@ use('tourPedia')
 
 // Requete exemple sans correction 
 mapFunction = function () {
-    emit(this.category, 1);};
+    emit(this.category, 1);
+};
 reduceFunction = function (key, values) {
-    return Array.sum(values);};
-queryParam = {"query":{}, "out":{"inline":true}};
+    return Array.sum(values);
+};
+queryParam = { "query": {}, "out": { "inline": true } };
 db.paris.mapReduce(mapFunction, reduceFunction, queryParam);
 
 
 
 // Requete exemple après correction (Inline doit être à 1 et non true)
 mapFunction = function () {
-    emit(this.category, 1);};
+    emit(this.category, 1);
+};
 reduceFunction = function (key, values) {
-    return Array.sum(values);};
+    return Array.sum(values);
+};
 queryParam = { query: {}, out: { inline: 1 } };
 db.paris.mapReduce(mapFunction, reduceFunction, queryParam);
 
