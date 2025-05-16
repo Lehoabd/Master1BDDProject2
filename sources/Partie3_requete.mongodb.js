@@ -1,3 +1,5 @@
+use('tourPedia')
+
 // Requete exemple sans correction 
 mapFunction = function () {
     emit(this.category, 1);};
@@ -149,11 +151,64 @@ printjson(result);
 
 
 
-// f. Attention, la moyenne n’est pas une fonction associative (contrairement à la somme) - problème de reduce local et global.
-Par compris ce qu'il faut faire.
-
 // g. Même question, mais en produisant la note moyenne (rating), min et max ;
-Par compris ce qu'il faut faire.
+// --- Fonction map ---
+mapFunction = function () {
+    if (Array.isArray(this.reviews)) {
+        this.reviews.forEach(function (review) {
+            if (review.source && typeof review.rating === "number") {
+                emit(review.source, {
+                    totalRating: review.rating,
+                    count: 1,
+                    min: review.rating,
+                    max: review.rating
+                });
+            }
+        });
+    }
+};
+
+// --- Fonction reduce ---
+reduceFunction = function (key, values) {
+    let result = { totalRating: 0, count: 0, min: Infinity, max: -Infinity };
+    values.forEach(function (val) {
+        result.totalRating += val.totalRating;
+        result.count += val.count;
+        if (val.min < result.min) result.min = val.min;
+        if (val.max > result.max) result.max = val.max;
+    });
+    return result;
+};
+
+// --- Fonction finalize ---
+finalizeFunction = function (key, reducedValue) {
+    return {
+        avg: Math.floor(reducedValue.totalRating / reducedValue.count),
+        min: reducedValue.min,
+        max: reducedValue.max
+    };
+};
+
+// --- Paramètres MapReduce ---
+queryParam = {
+    query: {},
+    out: { inline: 1 },
+    finalize: finalizeFunction
+};
+
+// --- Exécution ---
+let result = db.paris.mapReduce(mapFunction, reduceFunction, queryParam);
+
+// --- Affichage lisible ---
+result.results.forEach(function (doc) {
+    print("Source :", doc._id);
+    print("  Moyenne :", doc.value.avg);
+    print("  Min     :", doc.value.min);
+    print("  Max     :", doc.value.max);
+    print("----------------------------");
+});
+
+
 
 
 // h. Pour chaque langue de services, donner la liste distincte des services proposés ;
